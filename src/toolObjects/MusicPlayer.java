@@ -13,7 +13,7 @@ import javax.sound.sampled.Clip;
  *         Created Feb 14, 2015.
  */
 public class MusicPlayer {
-	
+	static HashMap<String, Clip> clips=new HashMap<String, Clip>();
 	private Clip clip;
 	
 	/**
@@ -24,6 +24,10 @@ public class MusicPlayer {
 	public MusicPlayer(String fileName) {
 		// FIXME: reduce the number of calls to the code below
 		// Obtain a clip.
+		if(clips.containsKey(fileName)){
+			this.clip = clips.get(fileName);
+			return;
+		}
 		try {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource(fileName));
 			AudioFormat baseFormat = audioInputStream.getFormat();
@@ -34,6 +38,7 @@ public class MusicPlayer {
 			AudioInputStream decodeAudioInputStream = AudioSystem.getAudioInputStream(decodeFormat, audioInputStream);
 			this.clip = AudioSystem.getClip();
 			this.clip.open(decodeAudioInputStream);
+			clips.put(fileName, clip);
 			audioInputStream.close();
 			decodeAudioInputStream.close();
 		} catch (Exception e) {
