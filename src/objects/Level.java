@@ -213,6 +213,7 @@ public class Level {
 
 			this.map = new int[this.mapHeight][this.mapWidth];
 
+			img = new BufferedImage(this.mapWidth*this.tileSize,this.mapHeight*this.tileSize,BufferedImage.TYPE_INT_RGB);
 			for (int r = 0; r < this.map.length; r++) {
 				// Get line of numbers and spaces.
 				currentLine = imageReader.readLine();
@@ -225,9 +226,9 @@ public class Level {
 					// Convert the String integers into integer values to be
 					// stored in level.
 					this.map[c][r] = Integer.parseInt(currentLineValues[c]);
+					drawTileImage(this.map[c][r], c, r, img.createGraphics());
 				}
 			}
-			img = new BufferedImage(this.mapWidth*this.tileSize,this.mapHeight*this.tileSize,BufferedImage.TYPE_INT_RGB);
 			imageReader.close();
 			generateBarrierCollisionBoxes();
 			generateRegularCollisionBoxes();
@@ -330,14 +331,14 @@ public class Level {
 	public void draw(Graphics2D g2) {
 		int currentPosition;
 		// cache the tile background in an image so tiles don't need to be drawn again and again redundantly.
-		Graphics2D g = img.createGraphics();
+		/*Graphics2D g = img.createGraphics();
 		for (int r = 0; r < this.map.length; r++) {
 			for (int c = 0; c < this.map[r].length; c++) {
 				currentPosition = this.map[r][c];
 				drawTileImage(currentPosition, r, c, g);
 			}
 		}
-		g.dispose();
+		g.dispose();*/
 		// draw cached tiles
 		g2.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
 	}
@@ -384,6 +385,7 @@ public class Level {
 	 */
 	public void updateTile(int x, int y, int tileID) {
 		this.map[x][y] = tileID;
+		drawTileImage(tileID, x, y, img.createGraphics());
 	}
 
 	/**
